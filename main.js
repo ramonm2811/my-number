@@ -1,43 +1,58 @@
 "use strict";
 
 //paso 1: Crear un numero aleatorio
-const numeroAleatorio = Math.floor(Math.random() * 20) + 1;
-console.log(numeroAleatorio);
-//paso 2: Event listener botón Check
+let numeroAleatorio = Math.floor(Math.random() * 20) + 1;
+
+//Variables del DOM
+let score = Number(document.querySelector(".scoreNumber").textContent);
+let highscore = Number(document.querySelector(".highScoreNumber").textContent);
+
+//paso 2: Event listener botón Check y Again
 document.querySelector(".check").addEventListener("click", logicaJuego);
+document.querySelector(".again").addEventListener("click", init);
 
 function logicaJuego() {
   const guess = Number(document.querySelector(".guess").value);
   if (!guess) {
     document.querySelector(".message").textContent = "Favor adivine un Número!";
+    decreaseScore();
+  } else if (guess > 20 || guess <= 0) {
+    decreaseScore();
+    document.querySelector(".message").textContent =
+      "Debe ser un numero entre 1 y 20";
   } else if (guess !== numeroAleatorio) {
     document.querySelector(".message").textContent =
       guess > numeroAleatorio ? "Numero muy alto 📈" : "Numero muy bajo 📉";
+    decreaseScore();
   } else if (guess === numeroAleatorio) {
     document.querySelector(".message").textContent =
       "FELICITACIONES GANASTE ✨🎉";
+    ganaste();
   }
 }
 
-/* 
-Game Logic: 
+function decreaseScore() {
+  score--;
+  document.querySelector(".scoreNumber").textContent = score;
+}
 
-- Crear un numero aleatorio el cual nosotros debemos adivinar 
-- Comenzamos con una puntuacion inicial (score)
-- Sí hacemos un guess incorrecto, se nos disminuye en 1 unidad el score
-    Sí nuestro guess es muy alto entonces obtenemos un mensaje (Muy alto)
-    Sí nuestro guess es muy bajo entonces obtenemos un mensaje (Muy bajo)
-- Sí adivinamos correctamente el numero aleatorio:
-    * La pantalla pasa a verde
-    * El numero aleatorio aparece en pantalla
-    * Obtenemos el mensaje, Numero correcto Felicitaciones
-    * Tenemos un contador que nos mantiene el score mas alto (highscore)
-- Tenemos un botón Again para reiniciar el juego
+function ganaste() {
+  document.querySelector("body").style.backgroundColor = "green";
+  document.querySelector(".box").textContent = numeroAleatorio;
+  if (score > highscore) {
+    highscore = score;
+    document.querySelector(".highScoreNumber").textContent = highscore;
+  }
+  console.log(score);
+}
 
-
-
-
-TIPS:
-Manten el codigo DRY
-Puedes utilizar funciones cuando lineas de codigo se repiten
-*/
+function init() {
+  //paso 1: Crear un numero aleatorio
+  numeroAleatorio = Math.floor(Math.random() * 20) + 1;
+  //Variables del DOM
+  score = 20;
+  document.querySelector(".scoreNumber").textContent = score;
+  document.querySelector("body").style.backgroundColor = "#222";
+  document.querySelector(".box").textContent = "?";
+  console.log(score);
+}
